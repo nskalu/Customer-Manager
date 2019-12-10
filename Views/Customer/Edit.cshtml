@@ -1,0 +1,78 @@
+﻿@model CustomerManager.Models.Customer
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+<form id="update">
+    <div class="form-group">
+        <label>Name</label>
+        <input id="name" type="text" value="@Model.Name" class="form-control" />
+      
+    </div>
+
+    <div class="form-group">
+        <label>Address</label>
+        <input id="address" type="text" value="@Model.Address" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Phone</label>
+        <input id="phone" type="text" value="@Model.Phone" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Date of Birth</label>
+        <input id="dob" type="text" value="@Model.DOB" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Email Address</label>
+        <input id="email" type="text" value="@Model.Email" class="form-control" />
+    </div>
+    @Html.HiddenFor(m => m.Id, new { @id="Id" })
+    <a href="" class="btn btn-primary" id="asubmit" type="submit" >Update</a>
+    @*<button class="btn btn-primary js-create">Submit</button>*@
+</form>
+
+@section scripts
+{
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            $('#asubmit').on('click', function (e) {
+                e.preventDefault;
+                var customer = {
+                    Name: $('#name').val(),
+                    Address: $('#address').val(),
+                    Phone: $('#phone').val(),
+                    DOB: $('#dob').val(),
+                    Email: $('#email').val(),
+                    Id:$('#Id').val()
+                };
+                $.ajax({
+                    url: '../../Api/Customer',
+                    method: 'PUT',
+                    dataType: 'json',
+                    contentType:'application/json',
+                    data: JSON.stringify(customer),
+                    success: function ()
+                    {
+                        alert("Updated Successfully")
+                    },
+                    error: function (xhr, status, error)
+                    {
+                        alert("error while Updating :"+error)
+                    }
+                })
+
+            });
+
+        });
+    </script>
+}
+
+
+

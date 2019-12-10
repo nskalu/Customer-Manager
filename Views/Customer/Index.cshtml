@@ -1,0 +1,125 @@
+﻿
+
+@{
+    ViewBag.Title = "List of Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>List of Customers</h2>
+<p>
+    @Html.ActionLink("Add New Customer", "Create")
+</p>
+<hr />
+
+    <table id="customers" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Address</th>
+                <th>Delete</th>                
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @*@foreach (var customer in Model)
+            {
+                <tr>
+                    <td>@customer.Name</td>
+                    <td>@customer.Address</td>
+                    <td>@Html.ActionLink("Details", "Detail1", "Customer", new { id = customer.Id })</td>
+                    <td>@Html.ActionLink("Edit", "Edit", "Customer", new { id = customer.Id }, null)</td>
+                    <td>
+                        <button data-customers-id="@customer.Id" class="btn btn-link js-delete">Delete</button>
+                    </td>
+
+                </tr>
+            }*@
+
+        </tbody>
+
+    </table>
+
+
+
+
+
+@section scripts
+    {
+    <script>      
+        function deletebtn (btnid) {
+           
+            var button =$(btnid);// $(this);
+            bootbox.confirm("are you sure you want to delete this customer?", function (result) {
+                if (result) {
+                    
+                    var btnattr = button.attr("data-customers-id");
+                    $.ajax({
+                        url: "/api/customer/" + button.attr("data-customers-id"),
+                        method: "DELETE",
+                        success: function () {
+                            
+                                //this part removes it from the datatable 
+                            
+                            button.parents("tr").remove();//this will delete it from the table
+                            
+
+                        }
+
+                    });
+                }
+            });
+
+        };
+    </script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#customers').DataTable({
+                //we want to feed our datatable with data from api instead of using the table above, the table will be commented out by me
+                ajax: {
+                    url: "/api/customer",
+                    dataSrc: ""
+                },
+                //specify the columnn
+                columns: [
+                   //1st column, customer name which will serve as a link for editing
+               {
+                   //the value i want to display
+                   data: "Name",
+                   //how it should be displayed, 
+                   render: function (data, type, customer) {
+                       //the below is explanatory, 1st is the anchor tag plus the link for editing, 2nd is to pass the customer Id for editing, the 3rd is the text to display, then close the anchor tag
+                       return "<a href='/customer/edit/" + customer.Id + "'>" + data + "</a>";
+                   }
+               },
+               {
+                   //2nd column
+                   data: "Address"
+               },
+                   //3rd column, is the delete 
+               {
+                   data: "Id",
+                   render: function (data) {
+                       return "<button class='btn-link js-delete' data-customers-id =" + data + "  onclick='deletebtn(this)'>Delete</button>"
+                   }
+               },
+
+                  //4th column is the details
+               {
+                   data: "Id",
+                   render: function (data) {
+                       return "<a href='/customer/detail/" + data + "'>Details</a>";
+                   }
+               }
+                ]
+
+
+            });
+
+
+
+                  });
+    
+    </script>
+}
+
